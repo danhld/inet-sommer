@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+<configurations>
+	<config id="0" 
+		packetSize="50" 
+		interDepartureTime="100" 
+		firstPacketTime="1000" 
+		trafDest="host[0]"  />
+		
+	<!-- scenario a1 -->
+	<config id="1" 
+		packetSize="50" 
+		interDepartureTime="exponential(1)" 
+		firstPacketTime="exponential(1)" 
+		trafDest="sink"  />
+	
+	<!-- scenario a2 -->
+	<config id="2" 
+		packetSize="50" 
+		interDepartureTime="exponential(3)" 
+		firstPacketTime="exponential(3)" 
+		trafDest="sink"  />
+		
+	<!-- scenario a3 -->
+	<config id="3" 
+		packetSize="50" 
+		interDepartureTime="exponential(10)" 
+		firstPacketTime="exponential(10)" 
+		trafDest="sink"  />
+		
+	<!-- scenario b -->
+	<config id="4" 
+		packetSize="50" 
+		onLength="10"
+		offLength="uniform(0,300)"
+		interDepartureTime="0.49" 
+		firstPacketTime="uniform(0,300)" 
+		trafDest="sink"  />
+</configurations>
