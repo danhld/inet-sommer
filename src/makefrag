@@ -1,1 +1,4 @@
 LIBS += $(PCAP_LIBS)
+
+LIBS += `sdl-config --libs`
+INCLUDE_PATH += `sdl-config --cflags`
