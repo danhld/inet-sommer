@@ -249,6 +249,7 @@ class INET_API Ieee80211Mac : public WirelessMacBase, public INotifiable
     virtual void initialize(int);
     virtual void registerInterface();
     virtual void initializeQueueModule();
+    virtual void finish();
     //@}
 
   protected:
