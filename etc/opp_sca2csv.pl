@@ -1,0 +1,146 @@
+#!/usr/bin/perl -Tw
+#
+# sca2csv_multi.pl - Outputs OMNeT++ 4 output scalar files in CSV format, collating values from multiple scalars into one column each
+#
+# Copyright (C) 2008 Christoph Sommer <christoph.sommer@informatik.uni-erlangen.de>
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+#
+use strict;
+use warnings;
+
+if (@ARGV < 1) {
+	print STDERR "usage: sca2csv_multi.pl <sca_name> [<sca_name> ...] \n";
+	print STDERR "e.g.: sca2csv_multi.pl totalRcvd totalSent <input.sca >output.csv\n";
+	exit;
+}
+
+my @sca_names;
+my %sca_known;
+while (my $sca_name = shift @ARGV) {
+	push (@sca_names, $sca_name);
+	$sca_known{$sca_name} = 1;
+}
+
+
+# read attrs from SCA header
+
+my %sca_attrs = ();
+while (<>) {
+
+	# header ends on empty line
+	last if (m{^\s*$});
+
+	# line must contain scalar data
+	next unless (m{
+			^attr
+			\s+
+			(("([^"]+)")|([^\s]+))
+			\s+
+			(("([^"]+)")|([^\s]+))
+			\r?\n$
+		}x);
+
+	my $attr = defined($3)?$3:"" . defined($4)?$4:"";
+	my $value = defined($7)?$7:"" . defined($8)?$8:"";
+
+	next if ($attr =~ m{configname|datetime|inifile|iterationvars|iterationvars2|measurement|network|processid|replication|resultdir|seedset});
+
+	$sca_attrs{$attr} = $value;
+
+	if ($attr eq 'experiment') {
+		my @parts = split('-', $value);
+		foreach my $part (@parts) {
+			my @av = split('_', $part);
+			if ($av[1]) {
+				$sca_attrs{$av[0]} = $av[1];
+			} else {
+				$sca_attrs{$av[0]} = $av[0];
+			}
+		}
+	}
+}
+
+
+# output CSV header
+
+print "nod_name";
+foreach my $sca_name (@sca_names) {
+	print "\t".$sca_name;
+}
+print "\n";
+
+
+# read SCA body, output CSV body
+
+my $current_nod_name = "";
+my %sca_values = %sca_attrs;
+my $have_sca_values = 0;
+while (<>) {
+	# line must contain scalar data
+	next unless (m{
+			^scalar
+			\s+
+			(("([^"]+)")|([^\s]+))
+			\s+
+			(("([^"]+)")|([^\s]+))
+			\s+
+			([0-9.-]+)
+			\r?\n$
+		}x);
+
+	my $nod_name = defined($3)?$3:"" . defined($4)?$4:"";
+	my $sca_name = defined($7)?$7:"" . defined($8)?$8:"";
+	my $value = $9;
+
+	# sca_name must be among those given on cmdline
+	next unless exists($sca_known{$sca_name});
+
+	# new nod_name?
+	if (!($nod_name eq $current_nod_name)) {
+
+		# see if there's anything in the buffer, print it
+		if ($have_sca_values) {
+			print $current_nod_name;
+			foreach my $sca_name (@sca_names) {
+				my $value = $sca_values{$sca_name};
+				print "\t".(defined $value ? $value : "");
+			}
+			print "\n";
+		}
+
+		# start over
+		$current_nod_name = $nod_name;
+		%sca_values = %sca_attrs;
+		$have_sca_values = 0;
+
+	}
+
+	# buffer value
+	$sca_values{$sca_name} = $value;
+	$have_sca_values = 1;
+
+} 
+
+# see if there's anything in the buffer, print it
+if ($have_sca_values) {
+	print $current_nod_name;
+	foreach my $sca_name (@sca_names) {
+		my $value = $sca_values{$sca_name};
+		print "\t".(defined $value ? $value : "");
+	}
+	print "\n";
+}
+
