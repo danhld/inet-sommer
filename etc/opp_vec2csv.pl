@@ -1,5 +1,4 @@
-#!/usr/bin/perl -Tw
-
+#!/usr/bin/perl
 #
 # vec2csv_multi.pl - Outputs OMNeT++ 4 output vector files in CSV format, collating values from multiple vectors into one column each
 #
@@ -35,7 +34,7 @@ $splitDups = 0 if ($addDups || $discardDups);
 $addDups = 0 if ($discardDups);
 
 if (@ARGV < 1) {
-	print STDERR "usage: vec2csv_multi.pl [-s|-a|-d] <vec_name> [<vec_name> ...] \n";
+	print STDERR "usage: vec2csv_multi.pl [OPTIONS] <vec_name> [<vec_name> ...] \n";
 	print STDERR "\n";
 	print STDERR "  -s --split-dups:   Of multiple observations made at the same time\n";
 	print STDERR "                     multiple records will be created\n";

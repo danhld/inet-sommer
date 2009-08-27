@@ -1,4 +1,4 @@
-#!/usr/bin/perl -Tw
+#!/usr/bin/perl
 #
 # sca2csv_multi.pl - Outputs OMNeT++ 4 output scalar files in CSV format, collating values from multiple scalars into one column each
 #
@@ -20,10 +20,22 @@
 #
 use strict;
 use warnings;
+use Getopt::Long;
+
+my $modulesRe = "";
+GetOptions (
+	"modules|m:s" => \$modulesRe,
+);
 
 if (@ARGV < 1) {
-	print STDERR "usage: sca2csv_multi.pl <sca_name> [<sca_name> ...] \n";
-	print STDERR "e.g.: sca2csv_multi.pl totalRcvd totalSent <input.sca >output.csv\n";
+	print STDERR "usage: sca2csv_multi.pl [OPTIONS] <sca_name> [<sca_name> ...] \n";
+	print STDERR "\n";
+	print STDERR "  -m --modules:      Regular expression to match module names against. If used\n";
+	print STDERR "                     with a named capture group (?<module>...), only this portion\n";
+	print STDERR "                     of the module name is considered\n";
+	print STDERR "                     [default: all]\n";
+	print STDERR "\n";
+	print STDERR "e.g.: sca2csv_multi.pl -m '".'^scenario\.host\[(?<module>[0-9]+)\]'."' totalRcvd totalSent <input.sca >output.csv\n";
 	exit;
 }
 
@@ -104,6 +116,13 @@ while (<>) {
 	my $nod_name = defined($3)?$3:"" . defined($4)?$4:"";
 	my $sca_name = defined($7)?$7:"" . defined($8)?$8:"";
 	my $value = $9;
+
+	if (defined($modulesRe) and ($modulesRe)) {
+		next unless ($nod_name =~ $modulesRe);
+		if (defined($+{module})) {
+			$nod_name = $+{module};
+		}
+	}
 
 	# sca_name must be among those given on cmdline
 	next unless exists($sca_known{$sca_name});
