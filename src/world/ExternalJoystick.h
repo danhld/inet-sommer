@@ -20,6 +20,7 @@
 
 #include <omnetpp.h>
 #include "INETDefs.h"
+#include "NotificationBoard.h"
 
 
 /**
@@ -30,6 +31,10 @@
  */
 class INET_API ExternalJoystick : public cSimpleModule {
 	public:
+		struct Event : cPolymorphic {
+			uint16_t buttonsPressed;
+			uint16_t buttonsReleased;
+		};
 
 	protected:
 		virtual int numInitStages() const {return 5;}
@@ -37,24 +42,13 @@ class INET_API ExternalJoystick : public cSimpleModule {
 		virtual void finish();
 		virtual void handleMessage(cMessage* msg);
 
-		/**
-		 * Called when one or more buttons were pressed since the last update.
-		 * @param buttons bit buffer of buttons pressed
-		 */
-		virtual void onJoystickButtonsPressed(uint16_t buttons);
-
-		/**
-		 * Called when one or more buttons were released since the last update.
-		 * @param buttons bit buffer of buttons released
-		 */
-		virtual void onJoystickButtonsReleased(uint16_t buttons);
-
 	protected:
 		simtime_t updateInterval;
 
 		cMessage* pollJoystick;
 		void* joystickState;
 
+		NotificationBoard *nb;
 };
 
 #endif

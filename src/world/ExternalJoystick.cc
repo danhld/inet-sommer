@@ -158,6 +158,8 @@ void ExternalJoystick::initialize(int stage) {
 
 		pollJoystick = new cMessage("pollJoystick");
 		scheduleAt(simTime(), pollJoystick);
+
+		nb = NotificationBoardAccess().get();
 	}
 }
 
@@ -179,21 +181,13 @@ void ExternalJoystick::handleMessage(cMessage* msg) {
 	uint16_t pressed = joystickState.getPressed();
 	uint16_t released = joystickState.getReleased();
 
-	if (pressed) onJoystickButtonsPressed(pressed);
-	if (released) onJoystickButtonsReleased(released);
+	if (pressed || released) {
+		ExternalJoystick::Event currentEvent;
+		currentEvent.buttonsPressed = pressed;
+		currentEvent.buttonsReleased = released;
+		nb->fireChangeNotification(NF_EXTERNALJOYSTICK_EVENT, &currentEvent);
+	}
 
 	scheduleAt(simTime() + updateInterval, pollJoystick);
-}
-
-void ExternalJoystick::onJoystickButtonsPressed(uint16_t buttons) {
-	std::ostringstream ss;
-	ss << "buttons " << (int)buttons << " pressed";
-	bubble(ss.str().c_str());
-}
-
-void ExternalJoystick::onJoystickButtonsReleased(uint16_t buttons) {
-	std::ostringstream ss;
-	ss << "buttons " << (int)buttons << " released";
-	bubble(ss.str().c_str());
 }
 
