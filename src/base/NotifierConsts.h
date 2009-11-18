@@ -33,6 +33,9 @@ enum
     // admin
     NF_SUBSCRIBERLIST_CHANGED,
 
+    // - world
+    NF_EXTERNALUDPSOCKET_EVENT,   // fired by ExternalUdpSocket
+
     // - host
     NF_HOSTPOSITION_UPDATED,
     NF_NODE_FAILURE,

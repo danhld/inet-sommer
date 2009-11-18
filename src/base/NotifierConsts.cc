@@ -27,6 +27,8 @@ const char *notificationCategoryName(int category)
     {
         case NF_SUBSCRIBERLIST_CHANGED: return "SUBSCRIBERS";
 
+        case NF_EXTERNALUDPSOCKET_EVENT: return "UDPSOCKET";
+
         case NF_HOSTPOSITION_UPDATED: return "POS";
         case NF_NODE_FAILURE: return "FAILURE";
         case NF_NODE_RECOVERY: return "RECOVERY";
