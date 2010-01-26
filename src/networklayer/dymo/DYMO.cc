@@ -141,6 +141,11 @@ void DYMOnet__DYMO::finish() {
 	if(dataLatency > 0 && dataSamples > 0)
 		recordScalar("data latency", dataLatency/dataSamples);
 
+	while (! queuedElements->isEmpty()) {
+		QueueElement *el = static_cast<QueueElement *>(queuedElements->remove(queuedElements->get(0)));
+		delete el->getObject();
+		delete el;
+	}
 	delete queuedElements;
 
 	delete dymo_routingTable;
