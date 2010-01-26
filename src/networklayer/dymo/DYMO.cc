@@ -243,13 +243,12 @@ void DYMOnet__DYMO::sendDataPacket(DYMO_Packet *packet) {
 		outstandingRREQ->destAddr = destAddr.getInt();
 		outstandingRREQ->creationTime = simTime();
 		outstandingRREQList.add(outstandingRREQ);
-
-		// -v- DYMOnet also queues the packet
-		QueueElement * qElement = new QueueElement(ownSeqNum, packet->getDestAddress(), myAddr, packet);
-		queuedElements->insert(qElement);
-		// -^-
-
 	}
+
+	// -v- DYMOnet also queues the packet
+	QueueElement * qElement = new QueueElement(ownSeqNum, packet->getDestAddress(), myAddr, packet);
+	queuedElements->insert(qElement);
+	// -^-
 }
 
 void DYMOnet__DYMO::handleLowerPacket(DYMO_Packet *datagram) {
