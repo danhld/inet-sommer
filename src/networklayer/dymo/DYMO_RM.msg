@@ -18,16 +18,11 @@
 //
 
 cplusplus {{
-#include "networklayer/dymo/DYMO_PacketBBMessage_m.h"
-#include "networklayer/dymo/DYMO_AddressBlock.h"
-
 #include <vector>
 #include <sys/types.h>
 
-using namespace std;
-
-typedef vector<DYMOnet::DYMO_AddressBlock> VectorOfDYMOAddressBlocks;
-
+#include "networklayer/dymo/DYMO_PacketBBMessage_m.h"
+#include "networklayer/dymo/DYMO_AddressBlock.h"
 #include "networklayer/dymo/InspectorHelpers.h"
 
 class DYMOnet_RM;
@@ -36,7 +31,7 @@ namespace DYMOnet {
   typedef DYMOnet_RM DYMO_RM;
 }
 
-
+typedef std::vector<DYMOnet::DYMO_AddressBlock> VectorOfDYMOAddressBlocks;
 }}
 
 
