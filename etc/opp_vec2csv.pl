@@ -1,6 +1,6 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 #
-# vec2csv_multi.pl - Outputs OMNeT++ 4 output vector files in CSV format, collating values from multiple vectors into one column each
+# opp_vec2csv.pl - Outputs OMNeT++ 4 output vector files in CSV format, collating values from multiple vectors into one column each
 #
 # Copyright (C) 2008 Christoph Sommer <christoph.sommer@informatik.uni-erlangen.de>
 #

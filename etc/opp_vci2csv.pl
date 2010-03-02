@@ -1,6 +1,6 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 #
-# vci2csv.pl - Outputs OMNeT++ 4 output vector-index files in CSV format
+# opp_vci2csv.pl - Outputs OMNeT++ 4 output vector-index files in CSV format
 #
 # Copyright (C) 2009 Christoph Sommer <christoph.sommer@informatik.uni-erlangen.de>
 #
