@@ -73,6 +73,9 @@ class INET_API BasicMobility : public BasicModule
     /** @brief Stores the actual position of the host*/
     Coord pos;
 
+    /** @brief Stores the actual angle of the host*/
+    double angle;
+
   protected:
     /** @brief This modules should only receive self-messages*/
     virtual void handleMessage(cMessage *msg);

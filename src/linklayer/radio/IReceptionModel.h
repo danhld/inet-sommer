@@ -19,6 +19,7 @@
 #define IRECEPTIONMODEL_H
 
 #include "INETDefs.h"
+#include "Coord.h"
 
 
 /**
@@ -38,7 +39,7 @@ class INET_API IReceptionModel : public cPolymorphic
     /**
      * To be redefined to calculate the received power of a transmission.
      */
-    virtual double calculateReceivedPower(double pSend, double carrierFrequency, double distance) = 0;
+    virtual double calculateReceivedPower(double pSend, double carrierFrequency, const Coord& senderPos, double senderAngle, const Coord& receiverPos, double receiverAngle) = 0;
 
     /**
      * Virtual destructor.

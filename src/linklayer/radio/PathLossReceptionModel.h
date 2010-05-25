@@ -38,7 +38,7 @@ class INET_API PathLossReceptionModel : public IReceptionModel
     /**
      * Perform the calculation.
      */
-    virtual double calculateReceivedPower(double pSend, double carrierFrequency, double distance);
+    virtual double calculateReceivedPower(double pSend, double carrierFrequency, const Coord& senderPos, double senderAngle, const Coord& receiverPos, double receiverAngle);
 };
 
 #endif

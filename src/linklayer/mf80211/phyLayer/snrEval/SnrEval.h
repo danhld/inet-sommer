@@ -93,7 +93,7 @@ class INET_API SnrEval : public BasicSnrEval
     virtual void handleLowerMsgEnd(AirFrame*);
 
     /** @brief Calculates the power with which a packet is received.*/
-    virtual double calcRcvdPower(double pSend, double distance);
+    virtual double calcRcvdPower(double pSend, const Coord& senderPos, double senderAngle, const Coord& receiverPos, double receiverAngle);
 
     /** Redefined from BasicSnrEval */
     virtual int getChannelNumber() const  {return rs.getChannelNumber();}

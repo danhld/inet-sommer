@@ -27,7 +27,7 @@ Define_Module(ChannelControl);
 
 std::ostream& operator<<(std::ostream& os, const ChannelControl::HostEntry& h)
 {
-    os << h.host->getFullPath() << " (x=" << h.pos.x << ",y=" << h.pos.y << "), "
+    os << h.host->getFullPath() << " (x=" << h.pos.x << ",y=" << h.pos.y << ",angle=" << h.angle*180/M_PI << "), "
        << h.neighbors.size() << " neighbor(s)";
     return os;
 }
@@ -136,7 +136,7 @@ double ChannelControl::calcInterfDist()
     return interfDistance;
 }
 
-ChannelControl::HostRef ChannelControl::registerHost(cModule *host, const Coord& initialPos, cGate *radioInGate)
+ChannelControl::HostRef ChannelControl::registerHost(cModule *host, const Coord& initialPos, double initialAngle, cGate *radioInGate)
 {
     Enter_Method_Silent();
     if (lookupHost(host) != NULL)
@@ -149,6 +149,7 @@ ChannelControl::HostRef ChannelControl::registerHost(cModule *host, const Coord&
     he.host = host;
     he.radioInGate = radioInGate;
     he.pos = initialPos;
+    he.angle = initialAngle;
     he.isNeighborListValid = false;
     he.channel = 0;  // for now
     hosts.push_back(he);
@@ -218,10 +219,11 @@ void ChannelControl::checkChannel(const int channel)
         error("Invalid channel, must be between 0 and %d", numChannels);
 }
 
-void ChannelControl::updateHostPosition(HostRef h, const Coord& pos)
+void ChannelControl::updateHostPosition(HostRef h, const Coord& pos, double angle)
 {
     Enter_Method_Silent();
     h->pos = pos;
+    h->angle = angle;
     updateConnections(h);
 }
 

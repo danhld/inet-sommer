@@ -145,6 +145,7 @@ AirFrame *BasicSnrEval::encapsMsg(cPacket *msg)
     frame->encapsulate(msg);
     frame->setDuration(calcDuration(frame));
     frame->setSenderPos(getMyPosition());
+    frame->setSenderAngle(getMyAngle());
     return frame;
 }
 

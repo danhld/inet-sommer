@@ -60,6 +60,9 @@ class INET_API ChannelAccess : public BasicModule
     /** @brief Returns the host's position*/
     const Coord& getMyPosition() {return cc->getHostPosition(myHostRef);}
 
+    /** @brief Returns the host's angle*/
+    const double& getMyAngle() {return cc->getHostAngle(myHostRef);}
+
   protected:
     /** @brief Register with ChannelControl and subscribe to hostPos*/
     virtual void initialize(int stage);

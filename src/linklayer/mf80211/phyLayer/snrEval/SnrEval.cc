@@ -272,11 +272,12 @@ void SnrEval::handleLowerMsgStart(AirFrame * frame)
 
     // calculate distance
     const Coord& myPos = getMyPosition();
+    const double& myAngle = getMyAngle();
     const Coord& framePos = frame->getSenderPos();
-    double distance = myPos.distance(framePos);
+    const double& frameAngle = frame->getSenderAngle();
 
     // calculate receive power
-    double rcvdPower = calcRcvdPower(frame->getPSend(), distance);
+    double rcvdPower = calcRcvdPower(frame->getPSend(), framePos, frameAngle, myPos, myAngle);
 
     // store the receive power in the recvBuff
     recvBuff[frame] = rcvdPower;
@@ -419,10 +420,11 @@ void SnrEval::addNewSnr()
  * arrives "here". If a different way of computing the path loss is
  * required this function can be redefined.
  */
-double SnrEval::calcRcvdPower(double pSend, double distance)
+double SnrEval::calcRcvdPower(double pSend, const Coord& senderPos, double senderAngle, const Coord& receiverPos, double receiverAngle)
 {
     double speedOfLight = 300000000.0;
     double waveLength = speedOfLight / carrierFrequency;
+    double distance = senderPos.distance(receiverPos);
     return (pSend * waveLength * waveLength / (16 * M_PI * M_PI * pow(distance, pathLossAlpha)));
 }
 

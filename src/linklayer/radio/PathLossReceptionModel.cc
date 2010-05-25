@@ -30,10 +30,11 @@ void PathLossReceptionModel::initializeFrom(cModule *radioModule)
         opp_error("PathLossReceptionModel: pathLossAlpha can't be smaller than in ChannelControl -- please adjust the parameters");
 }
 
-double PathLossReceptionModel::calculateReceivedPower(double pSend, double carrierFrequency, double distance)
+double PathLossReceptionModel::calculateReceivedPower(double pSend, double carrierFrequency, const Coord& senderPos, double senderAngle, const Coord& receiverPos, double receiverAngle)
 {
     const double speedOfLight = 300000000.0;
     double waveLength = speedOfLight / carrierFrequency;
+    double distance = senderPos.distance(receiverPos);
     return (pSend * waveLength * waveLength / (16 * M_PI * M_PI * pow(distance, pathLossAlpha)));
 }
 

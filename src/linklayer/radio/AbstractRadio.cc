@@ -197,6 +197,7 @@ AirFrame *AbstractRadio::encapsulatePacket(cPacket *frame)
     airframe->setBitrate(ctrl ? ctrl->getBitrate() : rs.getBitrate());
     airframe->setDuration(radioModel->calculateDuration(airframe));
     airframe->setSenderPos(getMyPosition());
+    airframe->setSenderAngle(getMyAngle());
     delete ctrl;
 
     EV << "Frame (" << frame->getClassName() << ")" << frame->getName()
@@ -394,11 +395,12 @@ void AbstractRadio::handleLowerMsgStart(AirFrame * airframe)
 
     // calculate distance
     const Coord& myPos = getMyPosition();
+    const double& myAngle = getMyAngle();
     const Coord& framePos = airframe->getSenderPos();
-    double distance = myPos.distance(framePos);
+    const double& frameAngle = airframe->getSenderAngle();
 
     // calculate receive power
-    double rcvdPower = receptionModel->calculateReceivedPower(airframe->getPSend(), carrierFrequency, distance);
+    double rcvdPower = receptionModel->calculateReceivedPower(airframe->getPSend(), carrierFrequency, framePos, frameAngle, myPos, myAngle);
 
     // store the receive power in the recvBuff
     recvBuff[airframe] = rcvdPower;

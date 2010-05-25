@@ -52,4 +52,5 @@ packet AirFrame
     simtime_t duration; // Time it takes to transmit the packet, in seconds
     double bitrate;
     Coord senderPos;
+    double senderAngle; // from -PI to PI
 }

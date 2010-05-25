@@ -138,11 +138,12 @@ void GilbertElliotSnr::handleLowerMsgStart(AirFrame * frame)
 
     // calculate distance
     const Coord& myPos = getMyPosition();
+    const double& myAngle = getMyAngle();
     const Coord& framePos = frame->getSenderPos();
-    double distance = myPos.distance(framePos);
+    const double& frameAngle = frame->getSenderAngle();
 
     // receive power
-    double rcvdPower = calcRcvdPower(frame->getPSend(), distance);
+    double rcvdPower = calcRcvdPower(frame->getPSend(), framePos, frameAngle, myPos, myAngle);
 
     if (state == BAD)
         frame->setBitError(true);

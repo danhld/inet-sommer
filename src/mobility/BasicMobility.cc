@@ -48,7 +48,7 @@ void BasicMobility::initialize(int stage)
 
         // get a pointer to the host
         hostPtr = findHost();
-        myHostRef = cc->registerHost(hostPtr, Coord());
+        myHostRef = cc->registerHost(hostPtr, Coord(), 0);
     }
     else if (stage == 1)
     {
@@ -59,6 +59,7 @@ void BasicMobility::initialize(int stage)
         // reading the coordinates from omnetpp.ini makes predefined scenarios a lot easier
         // -1 indicates start at display string position, or random position if it's not present
         pos.x = pos.y = -1;
+        angle = -1;
         if (hasPar("x"))   // not all mobility models have an "x" parameter
             pos.x = par("x");
         if (pos.x == -1)
@@ -72,6 +73,11 @@ void BasicMobility::initialize(int stage)
             pos.y = parseInt(hostPtr->getDisplayString().getTagArg("p",1), -1);
         if (pos.y == -1)
             pos.y = uniform(0, pgs.y);
+
+        if (hasPar("angle")) // not all mobility models have an "angle" parameter
+            angle = par("angle");
+        if (angle == -1)
+            angle = uniform(-M_PI, M_PI);
 
         // check validity of position
         if (pos.x < 0 || pos.y < 0 || pos.x >= pgs.x || pos.y >= pgs.y)
@@ -95,7 +101,7 @@ void BasicMobility::handleMessage(cMessage * msg)
 
 void BasicMobility::updatePosition()
 {
-    cc->updateHostPosition(myHostRef, pos);
+    cc->updateHostPosition(myHostRef, pos, angle);
 
     if (ev.isGUI())
     {

@@ -57,6 +57,7 @@ class INET_API ChannelControl : public cSimpleModule
         cGate *radioInGate;
         int channel;
         Coord pos; // cached
+        double angle; // cached
         std::set<HostRef> neighbors;  // cached neighbour list
 
         // we cache neighbors set in an std::vector, because std::set iteration is slow;
@@ -117,7 +118,7 @@ class INET_API ChannelControl : public cSimpleModule
     static ChannelControl *get();
 
     /** @brief Registers the given host. If radioInGate==NULL, the "radioIn" gate is assumed */
-    virtual HostRef registerHost(cModule *host, const Coord& initialPos, cGate *radioInGate=NULL);
+    virtual HostRef registerHost(cModule *host, const Coord& initialPos, double initialAngle, cGate *radioInGate=NULL);
 
     /** @brief Returns the module that was registered as HostRef h */
     cModule *getHost(HostRef h) const {return h->host;}
@@ -132,7 +133,7 @@ class INET_API ChannelControl : public cSimpleModule
     virtual HostRef lookupHost(cModule *host);
 
     /** @brief To be called when the host moved; updates proximity info */
-    virtual void updateHostPosition(HostRef h, const Coord& pos);
+    virtual void updateHostPosition(HostRef h, const Coord& pos, double angle);
 
     /** @brief Called when host switches channel */
     virtual void updateHostChannel(HostRef h, const int channel);
@@ -145,6 +146,9 @@ class INET_API ChannelControl : public cSimpleModule
 
     /** @brief Returns the host's position */
     const Coord& getHostPosition(HostRef h)  {return h->pos;}
+
+    /** @brief Returns the host's angle */
+    const double& getHostAngle(HostRef h)  {return h->angle;}
 
     /** @brief Get the list of modules in range of the given host */
     const HostRefVector& getNeighbors(HostRef h);
