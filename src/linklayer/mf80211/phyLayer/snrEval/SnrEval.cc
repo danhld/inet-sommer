@@ -28,6 +28,7 @@ Define_Module(SnrEval);
 
 SnrEval::SnrEval() : rs(this->getId())
 {
+    obstacles = 0;
 }
 
 void SnrEval::initialize(int stage)
@@ -53,6 +54,9 @@ void SnrEval::initialize(int stage)
 
         EV << "Initialized channel with noise: " << noiseLevel << " sensitivity: " << sensitivity <<
             endl;
+
+        obstacles = ObstacleControlAccess().getIfExists();
+        if (obstacles) EV << "Found ObstacleControl" << endl;
 
         // initialize the pointer of the snrInfo with NULL to indicate
         // that currently no message is received
@@ -278,6 +282,9 @@ void SnrEval::handleLowerMsgStart(AirFrame * frame)
 
     // calculate receive power
     double rcvdPower = calcRcvdPower(frame->getPSend(), framePos, frameAngle, myPos, myAngle);
+
+    // factor in obstacles
+    if (obstacles) rcvdPower = obstacles->calculateReceivedPower(rcvdPower, carrierFrequency, framePos, frameAngle, myPos, myAngle);
 
     // store the receive power in the recvBuff
     recvBuff[frame] = rcvdPower;

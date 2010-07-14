@@ -24,6 +24,7 @@
 #include "BasicSnrEval.h"
 #include "RadioState.h"
 #include "PhyControlInfo_m.h"
+#include "world/obstacles/ObstacleControl.h"
 
 /**
  * @brief Keeps track of the different snir levels when receiving a
@@ -121,6 +122,11 @@ class INET_API SnrEval : public BasicSnrEval
       /** @brief Snr list to store the SNR values*/
       SnrList sList;
     };
+
+    /**
+     * @brief State: Pointer to ObstacleControl module for calculating additional attenuation
+     */
+    ObstacleControl* obstacles;
 
     /**
      * @brief State: SnrInfo stores the snrList and the the recvdPower for the

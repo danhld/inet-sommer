@@ -145,6 +145,9 @@ void GilbertElliotSnr::handleLowerMsgStart(AirFrame * frame)
     // receive power
     double rcvdPower = calcRcvdPower(frame->getPSend(), framePos, frameAngle, myPos, myAngle);
 
+    // factor in obstacles
+    if (obstacles) rcvdPower = obstacles->calculateReceivedPower(rcvdPower, carrierFrequency, framePos, frameAngle, myPos, myAngle);
+
     if (state == BAD)
         frame->setBitError(true);
 
