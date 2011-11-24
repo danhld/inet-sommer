@@ -26,14 +26,13 @@
 #define MAX_MTU_SIZE 4000
 #endif
 
-#include <omnetpp.h>
+#include "INETDefs.h"
+
 #include "ExtFrame_m.h"
 #include "cSocketRTScheduler.h"
-#include "IPDatagram.h"
 
-#ifndef IPPROTO_SCTP
-#define IPPROTO_SCTP 132
-#endif
+// Forward declarations:
+class InterfaceEntry;
 
 
 class ExtInterface : public cSimpleModule
@@ -46,9 +45,9 @@ class ExtInterface : public cSimpleModule
     InterfaceEntry *interfaceEntry;  // points into RoutingTable
 
     // statistics
-    uint64 numSent;
-    uint64 numRcvd;
-    uint64 numDropped;
+    int numSent;
+    int numRcvd;
+    int numDropped;
 
     // access to real network interface via Scheduler class:
     cSocketRTScheduler *rtScheduler;
@@ -65,7 +64,7 @@ class ExtInterface : public cSimpleModule
   public:
    // Module_Class_Members(ExtInterface, cSimpleModule, 0);
 
-    virtual int32 numInitStages() const {return 4;}
+    virtual int numInitStages() const {return 4;}
     virtual void initialize(int stage);
     virtual void handleMessage(cMessage *msg);
 

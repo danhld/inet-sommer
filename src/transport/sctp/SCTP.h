@@ -23,11 +23,17 @@
 #pragma warning(disable : 4786)
 #endif
 
-#include <omnetpp.h>
-#include <map>
-#include "IPvXAddress.h"
-#include "UDPSocket.h"
+#include "INETDefs.h"
 
+#include <map>
+
+#include "IPvXAddress.h"
+
+#ifdef WITH_UDP
+#include "UDPSocket.h"
+#endif
+
+#define SCTP_UDP_PORT  9899
 
 class SCTPAssociation;
 class SCTPMessage;
@@ -161,10 +167,14 @@ class INET_API SCTP : public cSimpleModule
         typedef std::map<AppConnKey,SCTPAssociation*> SctpAppConnMap;
         typedef std::map<SockPair,SCTPAssociation*> SctpConnMap;
 
-
         SctpAppConnMap sctpAppConnMap;
         SctpConnMap sctpConnMap;
         std::list<SCTPAssociation*>assocList;
+
+#ifdef WITH_UDP
+        UDPSocket udpSocket;
+#endif
+
     protected:
         int32 sizeConnMap;
         static int32 nextConnId;
@@ -198,10 +208,10 @@ class INET_API SCTP : public cSimpleModule
 
         inline AssocStat* getAssocStat(uint32 assocId) {
             SCTP::AssocStatMap::iterator found = assocStatMap.find(assocId);
-            if(found != assocStatMap.end()) {
-              return(&found->second);
+            if (found != assocStatMap.end()) {
+              return (&found->second);
             }
-            return(NULL);
+            return (NULL);
         }
 
         /**
@@ -222,7 +232,7 @@ class INET_API SCTP : public cSimpleModule
         /**
         * To be called from SCTPAssociation: reserves an ephemeral port for the connection.
         */
-        int16 getEphemeralPort();
+        uint16 getEphemeralPort();
 
         /**
         * Generates a new integer, to be used as assocId. (assocId is part of the key

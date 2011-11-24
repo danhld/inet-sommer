@@ -36,11 +36,12 @@ void TCPNoCongestionControl::initialize()
 void TCPNoCongestionControl::processRexmitTimer(TCPEventCode& event)
 {
     TCPBaseAlg::processRexmitTimer(event);
-    if (event==TCP_E_ABORT)
+
+    if (event == TCP_E_ABORT)
         return;
 
     // Tahoe-style retransmission: only one segment
-    conn->retransmitOneSegment();
+    conn->retransmitOneSegment(true);
 }
 
 void TCPNoCongestionControl::receivedDataAck(uint32 firstSeqAcked)
@@ -50,4 +51,3 @@ void TCPNoCongestionControl::receivedDataAck(uint32 firstSeqAcked)
     // ack may have freed up some room in the window, try sending
     sendData();
 }
-

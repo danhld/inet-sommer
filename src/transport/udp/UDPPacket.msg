@@ -23,11 +23,11 @@ cplusplus {{
 
 
 //
-// Represents an \UDP packet, to be used with the UDP module.
+// Represents an UDP packet, to be used with the ~UDP module.
 //
 packet UDPPacket
 {
-    int sourcePort = -1;
-    int destinationPort = -1;
+    unsigned short sourcePort;
+    unsigned short destinationPort;
 }
 

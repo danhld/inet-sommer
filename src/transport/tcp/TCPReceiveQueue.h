@@ -1,6 +1,6 @@
 //
 // Copyright (C) 2004 Andras Varga
-//               2009 Thomas Reschka
+// Copyright (C) 2009 Thomas Reschka
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
@@ -44,7 +44,7 @@ class TCPCommand;
  *
  * @see TCPSendQueue
  */
-class INET_API TCPReceiveQueue : public cPolymorphic
+class INET_API TCPReceiveQueue : public cObject
 {
   protected:
     TCPConnection *conn; // the connection that owns this queue
@@ -53,7 +53,7 @@ class INET_API TCPReceiveQueue : public cPolymorphic
     /**
      * Ctor.
      */
-    TCPReceiveQueue()  {conn=NULL;}
+    TCPReceiveQueue()  {conn = NULL;}
 
     /**
      * Virtual dtor.

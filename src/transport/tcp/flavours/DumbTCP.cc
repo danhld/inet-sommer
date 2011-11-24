@@ -43,6 +43,7 @@ void DumbTCP::initialize()
     TCPAlgorithm::initialize();
 
     rexmitTimer = new cMessage("REXMIT");
+    rexmitTimer->setContextPointer(conn);
 }
 
 void DumbTCP::established(bool active)
@@ -51,7 +52,8 @@ void DumbTCP::established(bool active)
     {
         // finish connection setup with ACK (possibly piggybacked on data)
         tcpEV << "Completing connection setup by sending ACK (possibly piggybacked on data)\n";
-        if (!conn->sendData(false,65535))
+
+        if (!conn->sendData(false, 65535))
             conn->sendAck();
     }
 }
@@ -63,7 +65,7 @@ void DumbTCP::connectionClosed()
 
 void DumbTCP::processTimer(cMessage *timer, TCPEventCode& event)
 {
-    if (timer!=rexmitTimer)
+    if (timer != rexmitTimer)
         throw cRuntimeError(timer, "unrecognized timer");
 
     conn->retransmitData();
@@ -73,7 +75,7 @@ void DumbTCP::processTimer(cMessage *timer, TCPEventCode& event)
 void DumbTCP::sendCommandInvoked()
 {
     // start sending
-    conn->sendData(false,65535);
+    conn->sendData(false, 65535);
 }
 
 void DumbTCP::receivedOutOfOrderSegment()
@@ -94,7 +96,7 @@ void DumbTCP::receivedDataAck(uint32)
 {
     // ack may have freed up some room in the window, try sending.
     // small segments also OK (Nagle off)
-    conn->sendData(false,65535);
+    conn->sendData(false, 65535);
 }
 
 void DumbTCP::receivedDuplicateAck()
@@ -112,13 +114,18 @@ void DumbTCP::ackSent()
 {
 }
 
-void DumbTCP::dataSent(uint32)
+void DumbTCP::dataSent(uint32 fromseq)
 {
     if (rexmitTimer->isScheduled())
         conn->getTcpMain()->cancelEvent(rexmitTimer);
+
     conn->scheduleTimeout(rexmitTimer, REXMIT_TIMEOUT);
 }
 
 void DumbTCP::restartRexmitTimer()
+{
+}
+
+void DumbTCP::rttMeasurementCompleteUsingTS(uint32 echoedTS)
 {
 }

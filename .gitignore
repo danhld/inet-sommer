@@ -2,7 +2,13 @@
 *_m.h
 *_m.cc
 src/Makefile
-
+src/Makefile.vc
+/doc/doxy/
+/doc/neddoc/
+/examples/*/results/
+/examples/*/*/results/
+/examples/*/*/*/results/
+/tests/*/work/
 # ignore binary files
 out/
 *.so
@@ -24,3 +30,4 @@ backups
 *~
 xxx
 /3rdparty
+/tmp/

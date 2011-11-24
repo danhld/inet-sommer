@@ -1,5 +1,6 @@
 //
 // Copyright (C) 2004 Andras Varga
+// Copyright (C) 2010-2011 Zoltan Bojthe
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
@@ -23,18 +24,22 @@
 #include <omnetpp.h>
 #include "IPvXAddress.h"
 
+#include "TCPCommand_m.h"
 
+// Forward declarations:
 class TCPConnection;
 class TCPSegment;
+class TCPSendQueue;
+class TCPReceiveQueue;
 
 // macro for normal ev<< logging (Note: deliberately no parens in macro def)
-#define tcpEV (ev.disable_tracing||TCP::testing)?ev:ev
+#define tcpEV (ev.isDisabled()||TCP::testing)?ev:ev
 
 // macro for more verbose ev<< logging (Note: deliberately no parens in macro def)
-#define tcpEV2 (ev.disable_tracing||TCP::testing||!TCP::logverbose)?ev:ev
+#define tcpEV2 (ev.isDisabled()||TCP::testing||!TCP::logverbose)?ev:ev
 
 // testingEV writes log that automated test cases can check (*.test files)
-#define testingEV (ev.disable_tracing||!TCP::testing)?ev:ev
+#define testingEV (ev.isDisabled()||!TCP::testing)?ev:ev
 
 
 
@@ -103,10 +108,10 @@ class INET_API TCP : public cSimpleModule
 
         inline bool operator<(const AppConnKey& b) const
         {
-            if (appGateIndex!=b.appGateIndex)
-                return appGateIndex<b.appGateIndex;
+            if (appGateIndex != b.appGateIndex)
+                return appGateIndex < b.appGateIndex;
             else
-                return connId<b.connId;
+                return connId < b.connId;
         }
 
     };
@@ -114,31 +119,31 @@ class INET_API TCP : public cSimpleModule
     {
         IPvXAddress localAddr;
         IPvXAddress remoteAddr;
-        short localPort;
-        short remotePort;
+        int localPort;   // -1: unspec
+        int remotePort;  // -1: unspec
 
         inline bool operator<(const SockPair& b) const
         {
-            if (remoteAddr!=b.remoteAddr)
-                return remoteAddr<b.remoteAddr;
-            else if (localAddr!=b.localAddr)
-                return localAddr<b.localAddr;
-            else if (remotePort!=b.remotePort)
-                return remotePort<b.remotePort;
+            if (remoteAddr != b.remoteAddr)
+                return remoteAddr < b.remoteAddr;
+            else if (localAddr != b.localAddr)
+                return localAddr < b.localAddr;
+            else if (remotePort != b.remotePort)
+                return remotePort < b.remotePort;
             else
-                return localPort<b.localPort;
+                return localPort < b.localPort;
         }
     };
 
   protected:
-    typedef std::map<AppConnKey,TCPConnection*> TcpAppConnMap;
-    typedef std::map<SockPair,TCPConnection*> TcpConnMap;
+    typedef std::map<AppConnKey, TCPConnection*> TcpAppConnMap;
+    typedef std::map<SockPair, TCPConnection*> TcpConnMap;
 
     TcpAppConnMap tcpAppConnMap;
     TcpConnMap tcpConnMap;
 
-    short lastEphemeralPort;
-    std::multiset<short> usedEphemeralPorts;
+    ushort lastEphemeralPort;
+    std::multiset<ushort> usedEphemeralPorts;
 
   protected:
     /** Factory method; may be overriden for customizing TCP */
@@ -188,9 +193,17 @@ class INET_API TCP : public cSimpleModule
     /**
      * To be called from TCPConnection: reserves an ephemeral port for the connection.
      */
-    virtual short getEphemeralPort();
+    virtual ushort getEphemeralPort();
+
+    /**
+     * To be called from TCPConnection: create a new send queue.
+     */
+    virtual TCPSendQueue* createSendQueue(TCPDataTransferMode transferModeP);
+
+    /**
+     * To be called from TCPConnection: create a new receive queue.
+     */
+    virtual TCPReceiveQueue* createReceiveQueue(TCPDataTransferMode transferModeP);
 };
 
 #endif
-
-

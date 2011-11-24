@@ -75,7 +75,7 @@
  *
  * @see TCPReceiveQueue
  */
-class INET_API TCPSendQueue : public cPolymorphic
+class INET_API TCPSendQueue : public cObject
 {
   protected:
     TCPConnection *conn; // the connection that owns this queue
@@ -84,7 +84,7 @@ class INET_API TCPSendQueue : public cPolymorphic
     /**
      * Ctor.
      */
-    TCPSendQueue()  {conn=NULL;}
+    TCPSendQueue()  {conn = NULL;}
 
     /**
      * Virtual dtor.
@@ -98,7 +98,7 @@ class INET_API TCPSendQueue : public cPolymorphic
 
     /**
      * Initialize the object. The startSeq parameter tells what sequence number the first
-     * byte of app data should get. This is usually ISS+1 because SYN consumes
+     * byte of app data should get. This is usually ISS + 1 because SYN consumes
      * one byte in the sequence number space.
      *
      * init() may be called more than once; every call flushes the existing contents
@@ -115,6 +115,11 @@ class INET_API TCPSendQueue : public cPolymorphic
      * delete it.)
      */
     virtual void enqueueAppData(cPacket *msg) = 0;
+
+    /**
+     * Returns the sequence number of the first byte stored in the buffer.
+     */
+    virtual uint32 getBufferStartSeq() = 0;
 
     /**
      * Returns the sequence number of the last byte stored in the buffer plus one.
@@ -135,7 +140,7 @@ class INET_API TCPSendQueue : public cPolymorphic
     /**
      * Called when the TCP wants to send or retransmit data, it constructs
      * a TCP segment which contains the data from the requested sequence
-     * number range. The actually returned segment may contain less then
+     * number range. The actually returned segment may contain less than
      * maxNumBytes bytes if the subclass wants to reproduce the original
      * segment boundaries when retransmitting.
      */
@@ -150,5 +155,3 @@ class INET_API TCPSendQueue : public cPolymorphic
 };
 
 #endif
-
-
