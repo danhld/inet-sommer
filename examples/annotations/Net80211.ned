@@ -18,31 +18,28 @@
 
 package inet.examples.annotations;
 
-import inet.networklayer.autorouting.FlatNetworkConfigurator;
-import inet.nodes.adhoc.MobileHost;
-import inet.world.ChannelControl;
+import inet.networklayer.autorouting.ipv4.FlatNetworkConfigurator;
+import inet.nodes.inet.AdhocHost;
+import inet.world.radio.ChannelControl;
 import inet.world.annotations.AnnotationManager;
+
 
 
 network Net80211
 {
     parameters:
         int numHosts;
-        double playgroundSizeX;
-        double playgroundSizeY;
     submodules:
-        host[numHosts]: MobileHost {
+        host[numHosts]: AdhocHost {
             parameters:
-                @display("r=,,#707070");
+                @display("r=,,#707070;p=250,58");
         }
-        channelcontrol: ChannelControl {
+        channelControl: ChannelControl {
             parameters:
-                playgroundSizeX = playgroundSizeX;
-                playgroundSizeY = playgroundSizeY;
                 @display("p=60,50");
         }
         annotations: AnnotationManager {
-            @display("p=240,50");
+            @display("p=260,50");
         }
         configurator: FlatNetworkConfigurator {
             @display("p=140,50");

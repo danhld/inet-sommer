@@ -85,7 +85,7 @@ class INET_API SnrEval : public BasicSnrEval
 
     virtual void handleSelfMsg(cMessage*);
 
-    virtual void handleCommand(int msgkind, cPolymorphic *ctrl);
+    virtual void handleCommand(int msgkind, cObject *ctrl);
 
     /** @brief Buffer the frame and update noise levels and snr information */
     virtual void handleLowerMsgStart(AirFrame*);
@@ -94,7 +94,7 @@ class INET_API SnrEval : public BasicSnrEval
     virtual void handleLowerMsgEnd(AirFrame*);
 
     /** @brief Calculates the power with which a packet is received.*/
-    virtual double calcRcvdPower(double pSend, const Coord& senderPos, double senderAngle, const Coord& receiverPos, double receiverAngle);
+    virtual double calcRcvdPower(double pSend, double carrierFrequency, const Coord& senderPos, double senderAngle, const Coord& receiverPos, double receiverAngle);
 
     /** Redefined from BasicSnrEval */
     virtual int getChannelNumber() const  {return rs.getChannelNumber();}

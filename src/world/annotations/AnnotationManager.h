@@ -33,100 +33,106 @@
  */
 class INET_API AnnotationManager : public cSimpleModule
 {
-	public:
-		class Group;
+  public:
+    class Group;
 
-		class Annotation {
-			public:
-				Annotation() : group(0) {}
-				virtual ~Annotation() {}
+    class Annotation
+    {
+      public:
+        Annotation() : group(0) {}
+        virtual ~Annotation() {}
 
-			protected:
-				friend class AnnotationManager;
+      protected:
+        friend class AnnotationManager;
 
-				Group* group;
-				mutable std::list<cModule*> dummyObjects;
-		};
+        Group* group;
+        mutable std::list<cModule*> dummyObjects;
+    };
 
-		class Line : public Annotation {
-			public:
-				Line(Coord p1, Coord p2, std::string color) : p1(p1), p2(p2), color(color) {}
-				virtual ~Line() {}
+    class Line : public Annotation
+    {
+      public:
+        Line(Coord p1, Coord p2, std::string color) : p1(p1), p2(p2), color(color) {}
+        virtual ~Line() {}
 
-			protected:
-				friend class AnnotationManager;
+      protected:
+        friend class AnnotationManager;
 
-				Coord p1;
-				Coord p2;
-				std::string color;
-		};
+        Coord p1;
+        Coord p2;
+        std::string color;
+    };
 
-		class Polygon : public Annotation {
-			public:
-				Polygon(std::list<Coord> coords, std::string color) : coords(coords), color(color) {}
-				virtual ~Polygon() {}
+    class Polygon : public Annotation
+    {
+      public:
+        Polygon(std::list<Coord> coords, std::string color) : coords(coords), color(color) {}
+        virtual ~Polygon() {}
 
-			protected:
-				friend class AnnotationManager;
+      protected:
+        friend class AnnotationManager;
 
-				std::list<Coord> coords;
-				std::string color;
-		};
+        std::list<Coord> coords;
+        std::string color;
+    };
 
-		class Group {
-			public:
-				Group(std::string title) : title(title) {}
-				virtual ~Group() {}
+    class Group
+    {
+      public:
+        Group(std::string title) : title(title) {}
+        virtual ~Group() {}
 
-			protected:
-				friend class AnnotationManager;
+      protected:
+        friend class AnnotationManager;
 
-				std::string title;
-		};
+        std::string title;
+    };
 
-		~AnnotationManager();
-		void initialize();
-		void finish();
-		void handleMessage(cMessage *msg);
-		void handleSelfMsg(cMessage *msg);
-		void handleParameterChange(const char *parname);
+    ~AnnotationManager();
+    void initialize();
+    void finish();
+    void handleMessage(cMessage *msg);
+    void handleSelfMsg(cMessage *msg);
+    void handleParameterChange(const char *parname);
 
-		void addFromXml(cXMLElement* xml);
-		Group* createGroup(std::string title = "untitled");
-		Line* drawLine(Coord p1, Coord p2, std::string color, Group* group = 0);
-		Polygon* drawPolygon(std::list<Coord> coords, std::string color, Group* group = 0);
-		Polygon* drawPolygon(std::vector<Coord> coords, std::string color, Group* group = 0);
-		void drawBubble(Coord p1, std::string text);
-		void erase(const Annotation* annotation);
+    void addFromXml(cXMLElement* xml);
+    Group* createGroup(std::string title = "untitled");
+    Line* drawLine(Coord p1, Coord p2, std::string color, Group* group = 0);
+    Polygon* drawPolygon(std::list<Coord> coords, std::string color, Group* group = 0);
+    Polygon* drawPolygon(std::vector<Coord> coords, std::string color, Group* group = 0);
+    void drawBubble(Coord p1, std::string text);
+    void erase(const Annotation* annotation);
 
-		cModule* createDummyModule(std::string displayString);
-		cModule* createDummyModuleLine(Coord p1, Coord p2, std::string color);
+    cModule* createDummyModule(std::string displayString);
+    cModule* createDummyModuleLine(Coord p1, Coord p2, std::string color);
 
-		void show(const Annotation* annotation);
-		void hide(const Annotation* annotation);
-		void showAll(Group* group = 0);
-		void hideAll(Group* group = 0);
+    void show(const Annotation* annotation);
+    void hide(const Annotation* annotation);
+    void showAll(Group* group = 0);
+    void hideAll(Group* group = 0);
 
-	protected:
-		typedef std::list<Annotation*> Annotations;
-		typedef std::list<Group*> Groups;
+  protected:
+    typedef std::list<Annotation*> Annotations;
+    typedef std::list<Group*> Groups;
 
-		bool debug; /**< whether to emit debug messages */
-		cXMLElement* annotationsXml; /**< annotations to add at startup */
+    bool debug; /**< whether to emit debug messages */
+    cXMLElement* annotationsXml; /**< annotations to add at startup */
 
-		Annotations annotations;
-		Groups groups;
+    Annotations annotations;
+    Groups groups;
 };
 
 class AnnotationManagerAccess
 {
-	public:
-		AnnotationManagerAccess() {
-		}
+  public:
+    AnnotationManagerAccess()
+    {
+    }
 
-		AnnotationManager* getIfExists() {
-			return dynamic_cast<AnnotationManager*>(simulation.getModuleByPath("annotations"));
-		}
+    AnnotationManager* getIfExists()
+    {
+        return dynamic_cast<AnnotationManager*>(simulation.getModuleByPath("annotations"));
+    }
 };
 
 #endif

@@ -21,7 +21,8 @@
 
 Define_Module(AnnotationDummy);
 
-AnnotationDummy::~AnnotationDummy() {
+AnnotationDummy::~AnnotationDummy()
+{
 }
 
 

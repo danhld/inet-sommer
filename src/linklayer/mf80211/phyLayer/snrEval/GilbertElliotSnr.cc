@@ -137,13 +137,14 @@ void GilbertElliotSnr::handleLowerMsgStart(AirFrame * frame)
     // Calculate the receive power of the message
 
     // calculate distance
-    const Coord& myPos = getMyPosition();
-    const double& myAngle = getMyAngle();
+    const Coord& myPos = radioPos;
+    double myAngle = radioAngle;
     const Coord& framePos = frame->getSenderPos();
-    const double& frameAngle = frame->getSenderAngle();
+    double frameAngle = frame->getSenderAngle();
+    double distance = myPos.distance(framePos);
 
     // receive power
-    double rcvdPower = calcRcvdPower(frame->getPSend(), framePos, frameAngle, myPos, myAngle);
+    double rcvdPower = calcRcvdPower(frame->getPSend(), carrierFrequency, framePos, frameAngle, myPos, myAngle);
 
     // factor in obstacles
     if (obstacles) rcvdPower = obstacles->calculateReceivedPower(rcvdPower, carrierFrequency, framePos, frameAngle, myPos, myAngle);

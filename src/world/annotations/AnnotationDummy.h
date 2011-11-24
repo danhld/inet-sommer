@@ -30,10 +30,10 @@
  */
 class INET_API AnnotationDummy : public cSimpleModule
 {
-	public:
-		~AnnotationDummy();
+  public:
+    ~AnnotationDummy();
 
-	protected:
+  protected:
 };
 
 #endif
